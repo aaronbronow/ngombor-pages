@@ -1,12 +1,11 @@
 /* ==========================================
-   NGOMBOR PAGES - APP LOGIC & INTERACTIONS
+   NGOMBOR ART CONTEST - APP LOGIC & INTERACTIONS
    ========================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
   initThemeToggle();
-  initPillarTabs();
-  initDonationWidget();
-  initScrollAnimations();
+  initWhatsAppCTA();
+  initStarburstAlert();
 });
 
 /* ------------------------------------------
@@ -18,134 +17,74 @@ function initThemeToggle() {
   
   if (!themeBtn || !themeIcon) return;
 
-  // Retrieve saved preference or default to dark mode
-  const savedTheme = localStorage.getItem('theme') || 'dark';
+  // Retrieve saved preference or default to light mode (matching flyer)
+  const savedTheme = localStorage.getItem('contest-theme') || 'light';
   
-  if (savedTheme === 'light') {
-    document.body.classList.remove('dark-mode');
-    document.body.classList.add('light-mode');
-    themeIcon.textContent = 'dark_mode';
-  } else {
+  if (savedTheme === 'dark') {
     document.body.classList.remove('light-mode');
     document.body.classList.add('dark-mode');
-    themeIcon.textContent = 'light_mode';
+    themeIcon.textContent = 'light_mode'; // Show sun icon in dark mode
+  } else {
+    document.body.classList.remove('dark-mode');
+    document.body.classList.add('light-mode');
+    themeIcon.textContent = 'dark_mode';  // Show moon icon in light mode
   }
 
   themeBtn.addEventListener('click', () => {
-    if (document.body.classList.contains('dark-mode')) {
-      // Switch to Light Mode
-      document.body.classList.remove('dark-mode');
-      document.body.classList.add('light-mode');
-      themeIcon.textContent = 'dark_mode';
-      localStorage.setItem('theme', 'light');
-    } else {
+    if (document.body.classList.contains('light-mode')) {
       // Switch to Dark Mode
       document.body.classList.remove('light-mode');
       document.body.classList.add('dark-mode');
       themeIcon.textContent = 'light_mode';
-      localStorage.setItem('theme', 'dark');
+      localStorage.setItem('contest-theme', 'dark');
+    } else {
+      // Switch to Light Mode
+      document.body.classList.remove('dark-mode');
+      document.body.classList.add('light-mode');
+      themeIcon.textContent = 'dark_mode';
+      localStorage.setItem('contest-theme', 'light');
     }
   });
 }
 
 /* ------------------------------------------
-   2. Interactive Tab System (Pillars)
+   2. Automated WhatsApp Link Generator
    ------------------------------------------ */
-function initPillarTabs() {
-  const tabs = document.querySelectorAll('.pillar-tab');
-  const panes = document.querySelectorAll('.pillar-pane');
+function initWhatsAppCTA() {
+  const whatsappBtn = document.getElementById('whatsapp-btn');
   
-  if (tabs.length === 0 || panes.length === 0) return;
+  if (!whatsappBtn) return;
 
-  tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      // Remove active states from all tabs
-      tabs.forEach(t => {
-        t.classList.remove('active');
-        t.setAttribute('aria-selected', 'false');
-      });
-      
-      // Hide all panes
-      panes.forEach(pane => {
-        pane.classList.remove('active');
-        pane.setAttribute('hidden', '');
-      });
-
-      // Activate current tab
-      tab.classList.add('active');
-      tab.setAttribute('aria-selected', 'true');
-
-      // Show associated content pane
-      const targetId = tab.getAttribute('aria-controls');
-      const targetPane = document.getElementById(targetId);
-      if (targetPane) {
-        targetPane.classList.add('active');
-        targetPane.removeAttribute('hidden');
-      }
-    });
+  whatsappBtn.addEventListener('click', () => {
+    const phoneNumber = '256785955683';
+    // Pre-filled professional template matching the flyer details
+    const text = encodeURIComponent("Hello Ngombor, I am interested in joining the Ebola Prevention Art Contest! Please send me more registration info. My name is: ");
+    
+    // Open in a new tab
+    window.open(`https://wa.me/${phoneNumber}?text=${text}`, '_blank');
   });
 }
 
 /* ------------------------------------------
-   3. Interactive Donation Widget
+   3. Starburst Badge Interaction
    ------------------------------------------ */
-function initDonationWidget() {
-  const donationButtons = document.querySelectorAll('.donation-btn');
-  const impactDesc = document.getElementById('impact-description');
+function initStarburstAlert() {
+  const starburst = document.getElementById('starburst-btn');
   
-  if (donationButtons.length === 0 || !impactDesc) return;
+  if (!starburst) return;
 
-  donationButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      // Deactivate other buttons
-      donationButtons.forEach(b => b.classList.remove('active'));
-      
-      // Activate clicked button
-      btn.classList.add('active');
-      
-      // Fetch and transition the impact text smoothly
-      const newImpact = btn.getAttribute('data-impact');
-      
-      impactDesc.style.opacity = '0';
+  starburst.addEventListener('click', () => {
+    // Add a quick double wiggle class
+    starburst.style.transform = 'scale(1.1) rotate(16deg)';
+    setTimeout(() => {
+      starburst.style.transform = 'scale(0.95) rotate(-6deg)';
       setTimeout(() => {
-        impactDesc.textContent = newImpact;
-        impactDesc.style.opacity = '1';
+        starburst.style.transform = '';
       }, 150);
-    });
+    }, 150);
+    
+    // Smooth custom dialog alert for desktop/mobile engagement
+    const confirmationText = "🎨 Welcome to the Ebola Prevention Art Contest!\n\nYou can participate by making drawings, songs, social posts, or short videos promoting Ebola safety.\n\nMake sure to keep your art Ebola-safe (no big crowds!). Click the Message button below to register!";
+    alert(confirmationText);
   });
-}
-
-/* ------------------------------------------
-   4. Scroll Animations & Reveal Transitions
-   ------------------------------------------ */
-function initScrollAnimations() {
-  const revealElements = document.querySelectorAll('.goal-card, .stat-card, .pane-visual-box');
-  
-  if (revealElements.length === 0 || !('IntersectionObserver' in window)) return;
-
-  // Initial opacity setup
-  revealElements.forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(20px)';
-    el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
-  });
-
-  const observerOptions = {
-    root: null,
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-  };
-
-  const observer = new IntersectionObserver((entries, obs) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const el = entry.target;
-        el.style.opacity = '1';
-        el.style.transform = 'translateY(0)';
-        obs.unobserve(el); // Stop observing once animated
-      }
-    });
-  }, observerOptions);
-
-  revealElements.forEach(el => observer.observe(el));
 }
