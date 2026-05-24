@@ -173,38 +173,52 @@ h1, h2, h3, h4 {
 }
 
 .starburst-badge {
-  background-color: var(--secondary);
-  color: white;
   width: 130px;
   height: 130px;
-  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  text-align: center;
-  font-family: var(--font-headings);
-  font-weight: 800;
-  font-size: 0.95rem;
-  line-height: 1.2;
-  padding: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
   transform: rotate(8deg);
-  box-shadow: var(--shadow-md);
   position: relative;
   cursor: pointer;
-  transition: transform var(--transition-fast), background-color var(--transition-fast);
+  transition: transform var(--transition-fast);
   animation: wiggle 6s ease-in-out infinite;
-  
-  /* Pure CSS Starburst Mask */
-  clip-path: polygon(
-    50% 0%, 63% 9%, 77% 4%, 81% 18%, 95% 18%, 91% 32%, 100% 43%, 92% 55%, 97% 69%, 84% 73%, 81% 87%, 68% 88%, 58% 97%, 45% 91%, 31% 97%, 23% 85%, 9% 86%, 10% 72%, 0% 61%, 8% 49%, 3% 35%, 15% 29%, 14% 15%, 28% 16%, 35% 5%, 46% 12%
-  );
+}
+
+.starburst-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(var(--shadow-md));
+}
+
+.starburst-svg polygon {
+  transition: fill var(--transition-fast);
 }
 
 .starburst-badge:hover {
   transform: rotate(12deg) scale(1.05);
-  background-color: hsl(180, 78%, 30%);
+}
+
+.starburst-badge:hover .starburst-svg polygon {
+  fill: hsl(180, 78%, 30%);
+}
+
+.starburst-text {
+  position: relative;
+  z-index: 2;
+  color: white;
+  font-family: var(--font-headings);
+  font-weight: 800;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  padding: 12px;
+  pointer-events: none;
 }
 
 @keyframes wiggle {
